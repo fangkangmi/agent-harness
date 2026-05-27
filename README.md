@@ -2,7 +2,7 @@
 
 > Built by [Fang](https://github.com/fangkangmi) — contact via GitHub or [LinkedIn](https://www.linkedin.com/in/fangkangmi).
 
-A project-level harness for AI coding agents (built around Claude Code, but the patterns generalize) that adds enforcement, scaffolding, cost-aware quality gates, background audits, parallel plan-mode cross-validation, and a self-testing layer to any codebase. This is a sanitized public template distilled from a private working harness used team-wide on a Rust + AWS Lambda backend; domain specifics have been stripped, the structural patterns are kept intact.
+A project-level harness for AI coding agents (built around Claude Code, but the patterns generalize) that adds enforcement, scaffolding, cost-aware quality gates, background audits, multi-agent cross-validation, scheduled / unattended agent runs, and a self-testing layer to any codebase. This is a sanitized public template distilled from a private working harness used team-wide on a Rust + AWS Lambda backend; domain specifics have been stripped, the structural patterns are kept intact.
 
 ## What's inside
 
