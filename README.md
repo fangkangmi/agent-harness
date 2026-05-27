@@ -1,5 +1,7 @@
 # agent-harness
 
+> Built by [Fang](https://github.com/fangkangmi) — contact via GitHub or [LinkedIn](https://www.linkedin.com/in/fangkangmi).
+
 A project-level harness for AI coding agents (built around Claude Code, but the patterns generalize) that adds enforcement, scaffolding, cost-aware quality gates, background audits, parallel plan-mode cross-validation, and a self-testing layer to any codebase. This is a sanitized public template distilled from a private working harness used team-wide on a Rust + AWS Lambda backend; domain specifics have been stripped, the structural patterns are kept intact.
 
 ## What's inside
@@ -8,7 +10,7 @@ A project-level harness for AI coding agents (built around Claude Code, but the 
 - **Scaffolding** — slash-command skills that codify a project's "how to add X" recipes as agent-readable runbooks. See [`.claude/skills/`](.claude/skills).
 - **Cost-aware quality gates** — a runner that compresses verbose tool output via a cheap model before it lands in the conversation context. See [`.claude/scripts/check.sh`](.claude/scripts/check.sh).
 - **Background pre-merge audits** — detached Claude Haiku audits spawned on PR-lifecycle commands, replacing CI minutes with a few cents of model calls. See [`.claude/hooks/spawn-pr-audit.sh`](.claude/hooks/spawn-pr-audit.sh) and [`.claude/prompts/pre-merge-audit.md`](.claude/prompts/pre-merge-audit.md).
-- **Parallel plan-mode cross-validation** — `EnterPlanMode` spawns a background `codex exec` planning the same task; `ExitPlanMode` waits for it and feeds the independent plan back as a one-shot deny so the agent reconciles before proceeding. See [`.claude/hooks/codex-cross-validate-plan-start.sh`](.claude/hooks/codex-cross-validate-plan-start.sh).
+- **Multi-agent cross-validation** — exploits the price gap between Claude and Codex by running them as independent reviewers of each other. `EnterPlanMode` spawns a background `codex exec` planning the same task; `ExitPlanMode` waits for it and feeds the independent plan back as a one-shot deny so the primary agent must reconcile before proceeding. Code-review uses the same separation-of-concerns principle: the implementer agent never reviews its own output — a Codex pass and a subagent pass review independently. See [`.claude/hooks/codex-cross-validate-plan-start.sh`](.claude/hooks/codex-cross-validate-plan-start.sh).
 - **Self-testing** — a shell-based test suite for the hooks themselves, so harness changes can't silently regress. See [`.claude/hooks/tests/`](.claude/hooks/tests).
 
 ## Why this exists
@@ -25,6 +27,7 @@ This harness addresses all four. Hooks enforce policy at the tool-call boundary;
 - **Test-the-tools.** Hook changes require a test case in the bundled suite before merging — the harness eats its own dog food.
 - **Money awareness.** Output compression, audit word caps, and running expensive checks on a cheaper model locally instead of in CI are deliberate choices to preserve both context budget and dollars.
 - **Don't lock the team in.** Skills and hooks are committed; per-developer permissions and scratch worktrees are gitignored. The harness expresses a baseline, not a straitjacket.
+- **Separation of concerns across agents.** The implementer never reviews its own work. Plans, reviews, and audits are routed to an independent model — usually a cheaper one — so the harness gets a second opinion without doubling the primary agent's cost.
 
 ## How to adopt
 
@@ -38,7 +41,7 @@ This harness addresses all four. Hooks enforce policy at the tool-call boundary;
 
 This is a template, not a product.
 
-- **No LICENSE yet** (TODO).
+- **MIT licensed.** Use freely; the patterns are more interesting than the code.
 - **No language assumptions beyond Rust + AWS Lambda in the examples.** The example hooks reference `cargo`, `rustfmt`, and `.unwrap()` because that's the soil they grew in. The patterns generalize cleanly to other stacks (Python + Lambda, Go + Cloud Run, TypeScript + Vercel) — you will need to adapt the example shell glue.
 - **No CI integration.** The pre-merge audit hook is the only "CI-shaped" piece, and it runs locally by design.
 - **The audit prompt's six checks are illustrative.** Fork and rewrite them for your stack's contracts; the harness is the framing, not the rule set.
