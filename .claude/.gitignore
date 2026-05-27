@@ -1,0 +1,10 @@
+# Per-developer permission allowlist — never commit
+settings.local.json
+
+# Scratch git worktrees from agents running with isolation: "worktree"
+worktrees/
+
+# Pre-merge audit reports (spawn-pr-audit.sh) + lockfiles. Disposable
+# per-PR snapshots; never commit.
+audits/
+.audit-lock-*

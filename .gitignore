@@ -1,0 +1,13 @@
+# Editor / OS noise
+.DS_Store
+*.swp
+
+# Per-developer permission allowlist — never commit
+.claude/settings.local.json
+
+# Scratch git worktrees from agents running with isolation: "worktree"
+.claude/worktrees/
+
+# Pre-merge audit reports + lockfiles. Disposable per-PR snapshots.
+.claude/audits/
+.claude/.audit-lock-*
